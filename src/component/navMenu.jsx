@@ -21,24 +21,24 @@ function NavMenu() {
           <li className="navbarListItem" onClick={() => navigate("/")}>
             <Explore
               fill={pathMatchRoute("/") ? "#2c2c2c" : "#8f8f8f"}
-              width="36px"
-              height="36px"
+              width="34px"
+              height="34px"
             />
             <p className={pathMatchRoute("/") ? "navbarListItemNameActive" : "navbarListItemName" }>Explore</p>
           </li>
           <li className="navbarListItem" onClick={() => navigate("/offer")}>
             <Offer
               fill={pathMatchRoute("/offer") ? "#2c2c2c" : "#8f8f8f"}
-              width="36px"
-              height="36px"
+              width="34px"
+              height="34px"
             />
             <p className={pathMatchRoute("/offer") ? "navbarListItemNameActive" : "navbarListItemName" }>Offer</p>
           </li>
           <li className="navbarListItem" onClick={() => navigate("/profile")}>
             <Profile
               fill={pathMatchRoute("/profile") ? "#2c2c2c" : "#8f8f8f"}
-              width="36px"
-              height="36px"
+              width="34px"
+              height="34px"
             />
             <p className={pathMatchRoute("/profile") ? "navbarListItemNameActive" : "navbarListItemName" }>Profile</p>
           </li>

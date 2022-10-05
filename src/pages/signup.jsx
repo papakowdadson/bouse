@@ -5,8 +5,8 @@ import { getAuth, createUserWithEmailAndPassword,updateProfile } from "firebase/
 import {db} from '../firebase.config';
 import { setDoc,doc,serverTimestamp } from "firebase/firestore";
 
-import { ReactComponent as GoogleIcon } from "../assets/svg/googleIcon.svg";
 import { ReactComponent as ArrowRightIcon} from '../assets/svg/keyboardArrowRightIcon.svg'
+import OAuth from "../component/OAuth";
 
 
 function Signup() {
@@ -104,8 +104,8 @@ function Signup() {
         </button>
           </div>
         </form>
-        <p>Continue With</p>
-        <GoogleIcon width='34px' height='34px' />
+        <OAuth/>
+        {/* <GoogleIcon width='34px' height='34px' /> */}
         <Link to={"/signIn"} className='registerLink'>Login Instead</Link>
       </div>
     </>

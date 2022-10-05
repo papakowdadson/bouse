@@ -100,7 +100,7 @@ button {
   .listingDetails,
   .category,
   .explore {
-    margin: 3rem;
+    margin: 2rem;
   }
 }
 
@@ -135,7 +135,7 @@ button {
 }
 
 .pageHeader {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 800;
 }
 
@@ -185,12 +185,12 @@ button {
 }
 
 .nameInput {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   background: url('./assets/svg/badgeIcon.svg') #ffffff 2.5% center no-repeat;
 }
 
 .emailInput {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   background: url('./assets/svg/personIcon.svg') #ffffff 2.5% center no-repeat;
 }
 
@@ -199,7 +199,7 @@ button {
 }
 
 .passwordInput {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   background: url('./assets/svg/lockIcon.svg') #ffffff 2.5% center no-repeat;
 }
 
@@ -220,7 +220,7 @@ button {
 
 .signInBar,
 .signUpBar {
-  margin-top: 3rem;
+  margin-top: 1.0rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -264,7 +264,7 @@ button {
 }
 
 .socialLogin {
-  margin-top: 4rem;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -276,7 +276,7 @@ button {
   justify-content: center;
   align-items: center;
   padding: 0.75rem;
-  margin: 1.5rem;
+  margin: 1.0rem;
   width: 3rem;
   height: 3rem;
   background-color: #ffffff;
@@ -289,7 +289,7 @@ button {
 }
 
 .registerLink {
-  margin-top: 4rem;
+  margin-top: 2rem;
   color: #00cc66;
   font-weight: 600;
   text-align: center;

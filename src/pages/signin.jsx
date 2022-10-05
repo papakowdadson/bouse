@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import {toast} from 'react-toastify';
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword} from "firebase/auth";
 
-import { ReactComponent as GoogleIcon } from "../assets/svg/googleIcon.svg";
 import { ReactComponent as ArrowRightIcon } from "../assets/svg/keyboardArrowRightIcon.svg";
+import OAuth from "../component/OAuth";
 
 function Signin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -89,8 +89,7 @@ function Signin() {
             </button>
           </div>
         </form>
-        <p>Continue With</p>
-        <GoogleIcon width="36px" height="36px" />
+        <OAuth/>
         <Link to="/signUp" className="registerLink">
           SignUp Instead
         </Link>
