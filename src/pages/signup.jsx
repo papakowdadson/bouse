@@ -37,8 +37,8 @@ function Signup() {
     }catch(error){
       toast.error('Couldn\'t create account')
       console.log(error);
-      const errorCode = error.code;
-      const errorMessage = error.message;
+      // const errorCode = error.code;
+      // const errorMessage = error.message;
 
     }
     

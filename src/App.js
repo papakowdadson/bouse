@@ -12,6 +12,8 @@ import Profile from "./pages/profile";
 import Signin from "./pages/signin";
 import Signup from "./pages/signup";
 import PrivateRoute from "./component/PrivateRoute";
+import Category from "./pages/Category";
+import CreateListings from "./pages/CreateListings";
 
 function App() {
   return (
@@ -25,7 +27,9 @@ function App() {
           </Route>
           <Route path="/signUp" element={<Signup />} />
           <Route path="/signIn" element={<Signin />} />
+          <Route path="/createListings" element={<CreateListings/>} />
           <Route path="/forgetPassword" element={<ForgetPassword />} />
+          <Route path="/category/:categoryName" element={<Category/>} /> 
         </Routes>
         <NavMenu></NavMenu>
       </Router>

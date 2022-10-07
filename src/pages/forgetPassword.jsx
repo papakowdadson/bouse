@@ -7,10 +7,9 @@ import { Link } from 'react-router-dom';
 function ForgetPassword() {
   const [formData,setFormData] = useState({
     email:'',
-    password:''
   });
   
-  const {email,password} = formData
+  const {email} = formData
 
   const onChange =(e)=>{
     setFormData(()=>({

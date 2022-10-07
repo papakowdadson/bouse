@@ -5,7 +5,7 @@ import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { ReactComponent as GoogleIcon } from "../assets/svg/googleIcon.svg";
+// import { ReactComponent as GoogleIcon } from "../assets/svg/googleIcon.svg";
 
 function OAuth() {
   const navigate = useNavigate();
