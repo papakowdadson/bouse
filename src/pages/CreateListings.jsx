@@ -13,7 +13,7 @@ import {
 import { db } from "../firebase.config";
 import { v4 as uuidv4 } from "uuid";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { async } from "@firebase/util";
+
 
 function CreateListings() {
   // console.log(process.env.React_App_YOUR_GOOGLE_API_KEY)
@@ -22,8 +22,8 @@ function CreateListings() {
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
-    bedrooms: 1,
-    bathrooms: 1,
+    bedroom: 1,
+    bathroom: 1,
     parking: false,
     furnished: false,
     address: "",
@@ -38,8 +38,8 @@ function CreateListings() {
   const {
     type,
     name,
-    bedrooms,
-    bathrooms,
+    bedroom,
+    bathroom,
     parking,
     furnished,
     address,
@@ -185,25 +185,24 @@ function CreateListings() {
         return storeImage(image);
       })
     )
-      .then(() => {
-        console.log("urlready " + imageUrls);
-        uploadingListings(imageUrls);
-      })
+      // .then(() => {
+      //   console.log("urlready " + imageUrls);
+      //   return uploadingListings(imageUrls);
+      // })
       .catch((error) => {
         console.log(error);
         setLoading(false);
-        toast.error("Couldn't upload image");
+        toast.error("Couldn't upload listing");
         return;
       });
-
-    const uploadingListings = async (imageUrls) => {
-      console.log(imageUrls);
+      console.log("urlready " + imageUrls);
       const formDataCopy = {
         ...formData,
         imageUrls,
         geolocation,
         timestamp: serverTimestamp(),
       };
+      console.log(formDataCopy);
       formDataCopy.location = address;
       delete formDataCopy.address;
       delete formDataCopy.images;
@@ -213,13 +212,13 @@ function CreateListings() {
       const docRef = await addDoc(
         collection(db, "listings"),
         formDataCopy
-      ).then(() => {
+      )
         console.log(docRef);
         setLoading(false);
         toast.success("Created a listing");
         navigate(`/category/${formDataCopy.type}/${docRef.id}`);
-      });
-    };
+      
+    
   };
 
   return (
@@ -272,9 +271,9 @@ function CreateListings() {
               <input
                 className="formInputSmall"
                 type="number"
-                id="bedrooms"
+                id="bedroom"
                 onChange={onChange}
-                value={bedrooms}
+                value={bedroom}
                 min="1"
                 max="50"
                 required
@@ -283,9 +282,9 @@ function CreateListings() {
               <input
                 className="formInputSmall"
                 type="number"
-                id="bathrooms"
+                id="bathroom"
                 onChange={onChange}
-                value={bathrooms}
+                value={bathroom}
                 min="1"
                 max="50"
                 required
