@@ -5,7 +5,7 @@ import { getDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import "swiper/swiper-bundle.css";
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-import { Swiper, SwiperLide, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 import Spinner from "../component/Spinner";
 import shareIcon from "../assets/svg/shareIcon.svg";
@@ -23,34 +23,31 @@ const Listing = () => {
   const params = useParams();
   const auth = getAuth();
 
-  const fetchListings = async () => {
-    try {
-      // get listing
-      const listingRef = doc(db, "listings", params.listingId);
+  const fetchListing = async () => {
+    // get listing
+    const listingRef = doc(db, "listings", params.listingId);
 
-      //Execute querry
-      const querySnap = await getDoc(listingRef);
-      if (querySnap.exists()) {
-        setLoading(false);
-        console.log("single listing" + querySnap.data());
-        setListing(querySnap.data());
-        console.log(listing);
-        // TODO:fix listing being null,loading state not setting
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Couldn't load data");
+    //Execute querry
+    const docSnap = await getDoc(listingRef);
+    if (docSnap.exists()) {
+      console.log("single listing" + docSnap.data());
+      setListing(docSnap.data());
       setLoading(false);
+      console.log(listing);
+      // TODO:fix listing being null,loading state not setting
     }
+    else{
+    toast.error("Couldn't load data");
+    setLoading(false);}
   };
 
   useEffect(() => {
-    fetchListings();
+    fetchListing();
   }, [navigate, params.listingId]);
-
-  return { loading } ? (
-    <Spinner />
-  ) : (
+  if (loading){return<Spinner/>}
+  
+    
+  return(
     <main>
       <Swiper slidesPerView={1} pagination={{ clickable: true }}>
         {listing.imageUrls.map((url, index) => (

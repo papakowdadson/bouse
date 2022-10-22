@@ -6,7 +6,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 
 function ContactLandLord() {
   const [message, setMessage] = useState("");
-  const [landlord, setlandlord] = useState(null);
+  const [landlord, setLandlord] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const params = useParams();
@@ -14,18 +14,22 @@ function ContactLandLord() {
   useEffect(() => {
     getLandlord();
   }, [params.landlordid]);
+
   const getLandlord = async () => {
     const docRef = doc(db, "users", params.landlordid);
     const docSnapshot = await getDoc(docRef);
-    if (docSnapshot.exists) {
-      setlandlord(docSnapshot.data());
+    if (docSnapshot.exists()) {
+      setLandlord(docSnapshot.data());
+      console.log(setLandlord)
     } else {
       toast.error("could not get lanlord data");
     }
   };
+
   const onchange = (e) => {
     setMessage(e.target.value);
   };
+
   return (
     <div className="pageContainer">
       <header>
