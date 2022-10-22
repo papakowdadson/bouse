@@ -235,11 +235,11 @@ function CreateListings() {
                 <button
                   type="button"
                   className={
-                    type === "sale" ? "formButtonActive" : "formButton"
+                    type === "sell" ? "formButtonActive" : "formButton"
                   }
                   onClick={onChange}
                   id="type"
-                  value="sale"
+                  value="sell"
                 >
                   sell
                 </button>
@@ -353,7 +353,7 @@ function CreateListings() {
                 required
               />
 
-              <div className="formLatLng flex">
+              {/* <div className="formLatLng flex">
                 <label className="formLabel">Latitude</label>
                 <input
                   className="formInputSmall"
@@ -372,7 +372,7 @@ function CreateListings() {
                   onChange={onChange}
                   required
                 />
-              </div>
+              </div> */}
               <label className="formLabel">Offer</label>
               <div className="formButtons">
                 <button
