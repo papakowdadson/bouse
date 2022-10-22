@@ -3,8 +3,20 @@ import { useState, useEffect, useRef } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../component/Spinner";
+import { toast } from "react-toastify";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { db } from "../firebase.config";
+import { v4 as uuidv4 } from "uuid";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { async } from "@firebase/util";
 
 function CreateListings() {
+  // console.log(process.env.React_App_YOUR_GOOGLE_API_KEY)
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,7 +30,7 @@ function CreateListings() {
     offer: false,
     regularPrice: "",
     discountedPrice: "",
-    images:{},
+    images: {},
     latitude: 0,
     longitude: 0,
   });
@@ -66,26 +78,148 @@ function CreateListings() {
     if (e.target.value === "false") {
       bool = false;
     }
-    if (e.target.file) {
+    if (e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
-        images: e.target.file
-      }))
+        images: e.target.files,
+      }));
+      console.log(e.target.files);
+      console.log(images);
     }
 
     if (!e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]:bool !== Boolean && e.target.value
-
-      }))
+        [e.target.id]: bool !== Boolean && e.target.value,
+      }));
     }
-
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData)
+    setLoading(true);
+    if (discountedPrice >= regularPrice) {
+      setLoading(false);
+      toast.error("Discounted price should be less than regular price");
+    }
+    console.log(formData);
+    if (images.length > 6) {
+      setLoading(false);
+      toast.error("Max of 6 images");
+    }
+    let geolocation = {};
+    let location;
+    // if (address != null) {
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.React_App_YOUR_GOOGLE_API_KEY}`
+      );
+      const data = await response.json();
+      console.log(data);
+      geolocation.lat = data.results[0].geometry.location.lat;
+      geolocation.lng = data.results[0].geometry.location.lng;
+      console.log(
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      );
+      console.log(geolocation.lat);
+      console.log(data.status);
+      location =
+        data.status == "ZERO_RESULTS"
+          ? undefined
+          : data.results[0].formatted_address;
+      if (location == undefined || location.includes("undefined")) {
+        setLoading(false);
+        toast.error("area does not match");
+      }
+    } catch (error) {
+      toast.error("area does not match");
+    }
+
+    //s store image to firebase
+    const storeImage = async (image) => {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+
+        const storageRef = ref(storage, "images/" + fileName);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+              console.log("File available at", downloadURL);
+              // return downloadURL;
+              
+            });
+          }
+        );
+      });
+    };
+
+    const imageUrls = await Promise.all(
+      [...images].map((image) => {
+        return storeImage(image);
+      })
+    )
+      .then(() => {
+        console.log("urlready " + imageUrls);
+        uploadingListings(imageUrls);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        toast.error("Couldn't upload image");
+        return;
+      });
+
+    const uploadingListings = async (imageUrls) => {
+      console.log(imageUrls);
+      const formDataCopy = {
+        ...formData,
+        imageUrls,
+        geolocation,
+        timestamp: serverTimestamp(),
+      };
+      formDataCopy.location = address;
+      delete formDataCopy.address;
+      delete formDataCopy.images;
+      !formDataCopy.offer && delete formDataCopy.discountedPrice;
+      console.log("this is" + formDataCopy);
+
+      const docRef = await addDoc(
+        collection(db, "listings"),
+        formDataCopy
+      ).then(() => {
+        console.log(docRef);
+        setLoading(false);
+        toast.success("Created a listing");
+        navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+      });
+    };
   };
 
   return (
@@ -160,7 +294,11 @@ function CreateListings() {
               <div className="formButtons">
                 <button
                   type="button"
-                  className={parking && parking !=null ? "formButtonActive" : "formButton"}
+                  className={
+                    parking && parking != null
+                      ? "formButtonActive"
+                      : "formButton"
+                  }
                   onClick={onChange}
                   id="parking"
                   value={true}
@@ -169,7 +307,11 @@ function CreateListings() {
                 </button>
                 <button
                   type="button"
-                  className={!parking && parking !=null ? "formButtonActive" : "formButton"}
+                  className={
+                    !parking && parking != null
+                      ? "formButtonActive"
+                      : "formButton"
+                  }
                   onClick={onChange}
                   id="parking"
                   value={false}
@@ -256,38 +398,38 @@ function CreateListings() {
               <label className="formLabel">Upload images</label>
               <p className="imagesInfo">A maximum of 6</p>
               <input
-              className="formInputFile"
+                className="formInputFile"
                 type="file"
                 id="images"
                 name="images"
                 max="6"
                 accept=".png,.jpg,.jpeg"
-                
+                onChange={onChange}
                 multiple
+                required
               />
 
               <label className="formLabel">Regular price</label>
               <div className="formPriceDiv">
-              <input 
-              className="formInputSmall"
-                type="number"
-                name="regularPrice"
-                id="regularPrice"
-                onChange={onChange}
-                value={regularPrice}
-                defaultValue='40'
-                min='40'
-                max='4000'
-                
-                required
-              />
-              {type === "rent" && <p className="formPriceText">      $ / Month</p>}
+                <input
+                  className="formInputSmall"
+                  type="number"
+                  name="regularPrice"
+                  id="regularPrice"
+                  onChange={onChange}
+                  value={regularPrice}
+                  defaultValue="40"
+                  min="40"
+                  max="4000"
+                  required
+                />
+                {type === "rent" && <p className="formPriceText"> $ / Month</p>}
               </div>
               {offer && (
                 <>
                   <label className="formLabel">Discount</label>
                   <input
-                  className="formInputSmall"
+                    className="formInputSmall"
                     type="number"
                     name="discountedPrice"
                     id="discountedPrice"
