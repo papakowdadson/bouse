@@ -24,12 +24,12 @@ function CreateListings() {
     name: "",
     bedroom: 1,
     bathroom: 1,
-    parking: false,
-    furnished: false,
+    parking: 'false',
+    furnished: 'false',
     address: "",
-    offer: false,
+    offer: 'false',
     regularPrice: "",
-    discountedPrice: "",
+    discountedPrice: 0,
     images: {},
     latitude: 0,
     longitude: 0,
@@ -47,8 +47,6 @@ function CreateListings() {
     regularPrice,
     discountedPrice,
     images,
-    latitude,
-    longitude,
   } = formData;
   const auth = getAuth();
   const navigate = useNavigate();
@@ -72,11 +70,21 @@ function CreateListings() {
 
   const onChange = (e) => {
     let bool = null;
-    if (e.target.value === "true") {
+    if (e.target.value === 'true') {
       bool = true;
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: e.target.value,
+      }));
+      console.log(parking)
     }
-    if (e.target.value === "false") {
+    if (e.target.value === 'false') {
       bool = false;
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: e.target.value,
+      }));
+      console.log(parking)
     }
     if (e.target.files) {
       setFormData((prevState) => ({
@@ -87,10 +95,10 @@ function CreateListings() {
       console.log(images);
     }
 
-    if (!e.target.files) {
+    if (!e.target.files && bool !== Boolean) {
       setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]: bool !== Boolean && e.target.value,
+        [e.target.id]: e.target.value,
       }));
     }
   };
@@ -98,22 +106,16 @@ function CreateListings() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (discountedPrice >= regularPrice) {
-      setLoading(false);
-      toast.error("Discounted price should be less than regular price");
-    }
+    
     console.log(formData);
-    if (images.length > 6) {
-      setLoading(false);
-      toast.error("Max of 6 images");
-    }
+    
     let geolocation = {};
     let location;
     // if (address != null) {
 
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.React_App_YOUR_GOOGLE_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`
       );
       const data = await response.json();
       console.log(data);
@@ -122,8 +124,8 @@ function CreateListings() {
       console.log(
         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       );
-      console.log(geolocation.lat);
-      console.log(data.status);
+      // console.log(geolocation.lat);
+      // console.log(data.status);
       location =
         data.status == "ZERO_RESULTS"
           ? undefined
@@ -138,6 +140,10 @@ function CreateListings() {
 
     //s store image to firebase
     const storeImage = async (image) => {
+      if (images.length > 6) {
+        setLoading(false);
+        toast.error("Max of 6 images");
+      }
       return new Promise((resolve, reject) => {
         const storage = getStorage();
         const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
@@ -171,7 +177,7 @@ function CreateListings() {
             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               resolve(downloadURL);
-              console.log("File available at", downloadURL);
+              // console.log("File available at", downloadURL);
               // return downloadURL;
               
             });
@@ -180,22 +186,22 @@ function CreateListings() {
       });
     };
 
+    if (discountedPrice >= regularPrice) {
+      setLoading(false);
+      toast.error("Discounted price should be less than regular price");
+    }
+
     const imageUrls = await Promise.all(
       [...images].map((image) => {
         return storeImage(image);
       })
-    )
-      // .then(() => {
-      //   console.log("urlready " + imageUrls);
-      //   return uploadingListings(imageUrls);
-      // })
-      .catch((error) => {
+    ) .catch((error) => {
         console.log(error);
         setLoading(false);
         toast.error("Couldn't upload listing");
         return;
       });
-      console.log("urlready " + imageUrls);
+      // console.log("urlready " + imageUrls);
       const formDataCopy = {
         ...formData,
         imageUrls,
@@ -206,7 +212,7 @@ function CreateListings() {
       formDataCopy.location = address;
       delete formDataCopy.address;
       delete formDataCopy.images;
-      !formDataCopy.offer && delete formDataCopy.discountedPrice;
+      formDataCopy.offer=='false' && delete formDataCopy.discountedPrice;
       console.log("this is" + formDataCopy);
 
       const docRef = await addDoc(
@@ -294,48 +300,48 @@ function CreateListings() {
                 <button
                   type="button"
                   className={
-                    parking && parking != null
+                    parking=='true'
                       ? "formButtonActive"
                       : "formButton"
                   }
                   onClick={onChange}
                   id="parking"
-                  value={true}
+                  value={'true'}
                 >
                   Yes
                 </button>
                 <button
                   type="button"
                   className={
-                    !parking && parking != null
+                    parking==='false'
                       ? "formButtonActive"
                       : "formButton"
                   }
                   onClick={onChange}
                   id="parking"
-                  value={false}
+                  value={'false'}
                 >
                   No
                 </button>
               </div>
 
               <label className="formLabel">Furnished</label>
-              <div className="formButtons">
+              <div className="formButtons">'
                 <button
                   type="button"
-                  className={furnished ? "formButtonActive" : "formButton"}
+                  className={furnished==='true' ? "formButtonActive" : "formButton"}
                   onClick={onChange}
                   id="furnished"
-                  value={true}
+                  value={'true'}
                 >
                   yes
                 </button>
                 <button
                   type="button"
-                  className={!furnished ? "formButtonActive" : "formButton"}
+                  className={furnished==='false' ? "formButtonActive" : "formButton"}
                   onClick={onChange}
                   id="furnished"
-                  value={false}
+                  value={'false'}
                 >
                   no
                 </button>
@@ -352,44 +358,23 @@ function CreateListings() {
                 max="50"
                 required
               />
-
-              {/* <div className="formLatLng flex">
-                <label className="formLabel">Latitude</label>
-                <input
-                  className="formInputSmall"
-                  type="number"
-                  id="latitude"
-                  value={latitude}
-                  onChange={onChange}
-                  required
-                />
-                <label className="formLabel">Longitude</label>
-                <input
-                  className="formInputSmall"
-                  type="number"
-                  id="longitude"
-                  value={longitude}
-                  onChange={onChange}
-                  required
-                />
-              </div> */}
               <label className="formLabel">Offer</label>
               <div className="formButtons">
                 <button
                   type="button"
-                  className={offer ? "formButtonActive" : "formButton"}
+                  className={offer==='true' ?"formButtonActive" : "formButton"}
                   onClick={onChange}
                   id="offer"
-                  value={true}
+                  value={'true'}
                 >
                   yes
                 </button>
                 <button
                   type="button"
-                  className={!offer ? "formButtonActive" : "formButton"}
+                  className={offer==='false' ? "formButtonActive" : "formButton"}
                   onClick={onChange}
                   id="offer"
-                  value={false}
+                  value={'false'}
                 >
                   no
                 </button>
@@ -424,7 +409,7 @@ function CreateListings() {
                 />
                 {type === "rent" && <p className="formPriceText"> $ / Month</p>}
               </div>
-              {offer && (
+              {offer==='true' && (
                 <>
                   <label className="formLabel">Discount</label>
                   <input
@@ -434,7 +419,7 @@ function CreateListings() {
                     id="discountedPrice"
                     onChange={onChange}
                     value={discountedPrice}
-                    required={offer}
+                    required={offer==='true'}
                   />
                 </>
               )}

@@ -11,6 +11,7 @@ import Spinner from "../component/Spinner";
 import shareIcon from "../assets/svg/shareIcon.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import GoogleMapDraw from "../component/GoogleMapDraw";
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 const Listing = () => {
   // Todo: Add leaflet cdn to index in the public folder
@@ -78,7 +79,7 @@ const Listing = () => {
       <div className="listingDetails">
         <p className="listingName">
           {listing.name}-$
-          {listing.offer
+          {listing.offer=='true'
             ? listing.discountedPrice
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -88,8 +89,8 @@ const Listing = () => {
         </p>
         <p className="listingLocation">{listing.location}</p>
         <p className="listingType">For {listing.type==='rent'?'rent':'sale'}</p>
-        {listing.offer && (
-          <p>${listing.regularPrice - listing.discountedPrice}discount</p>
+        {listing.offer=='true' && (
+          <p>${listing.regularPrice - listing.discountedPrice} discount</p>
         )}
         <ul className="listingDetailsList">
           <li>
@@ -106,7 +107,11 @@ const Listing = () => {
           <li>{listing.furnished && "Furnished"}</li>
         </ul>
         <p className="listingLocationTitle">Location</p>
-        {/* map */}
+        {/* map */} 
+        <div className="leafletContainer">
+        
+       <GoogleMapDraw data={listing}/>  
+        </div>
         {auth.currentUser.uid !== listing.userRef && (
           <Link
             to={`/contact/${listing.userRef}?listingName=${listing.name}`}
