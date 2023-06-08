@@ -100,7 +100,6 @@ console.log(listings.length)
 
 
 
-
   return (
     <div className="profile">
       <header className="profileHeader">
