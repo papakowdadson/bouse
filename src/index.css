@@ -384,7 +384,7 @@ button {
   height: 15vw;
   width: 100%;
   border-radius: 1.5rem;
-  object-fit: cover;
+  object-fit: fit;
   margin: 0 auto;
 }
 

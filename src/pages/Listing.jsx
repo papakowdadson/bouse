@@ -22,7 +22,9 @@ const Listing = () => {
 
   const navigate = useNavigate();
   const params = useParams();
+  console.log('Params:',params);
   const auth = getAuth();
+  console.log('auth:',auth)
 
   const fetchListing = async () => {
     // get listing
@@ -50,7 +52,7 @@ const Listing = () => {
   
     
   return(
-    <main>
+    <main style={{padding:'5px'}}>
       <Swiper slidesPerView={1} pagination={{ clickable: true }}>
         {listing.imageUrls.map((url, index) => (
           <SwiperSlide key={index}>
@@ -59,12 +61,12 @@ const Listing = () => {
               className="swiperSlideDiv"
               style={{
                 background: `url(${url}) center no-repeat `,
-                backgroundSize: "cover",
+                backgroundSize: "100% auto",
               }}
             >
-            <img src={url} alt="" srcset="" />
+            {/* <img src={url} alt="" srcset="" />
             {console.log('url')}
-            {console.log(url)}
+            {console.log(url)} */}
             </div>
           </SwiperSlide>
         ))}
@@ -119,14 +121,14 @@ const Listing = () => {
         
        <GoogleMapDraw data={listing}/>  
         </div>
-        {auth.currentUser.uid !== listing.userRef && (
+        {auth.currentUser&&( auth.currentUser.uid !== listing.userRef && (
           <Link
             to={`/contact/${listing.userRef}?listingName=${listing.name}`}
             className="primaryButton"
           >
             Contact Landlord
           </Link>
-        )}
+        ))}
       </div>
     </main>
   );
