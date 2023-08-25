@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import VisibilityIcon from '../assets/svg/visibilityIcon.svg'; 
 import {toast} from 'react-toastify';
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword} from "firebase/auth";
-
+import VisibilityOff from '../assets/svg/VisibilityOff.svg'
 import { ReactComponent as ArrowRightIcon } from "../assets/svg/keyboardArrowRightIcon.svg";
 import OAuth from "../component/OAuth";
 
@@ -73,7 +74,7 @@ function Signin() {
               onChange={Onchange}
             />
             <img
-              src={require("../assets/svg/visibilityIcon.svg")}
+              src={ showPassword?VisibilityIcon : VisibilityOff}
               alt="show password"
               onClick={() => setShowPassword((prevState) => !prevState)}
               className="showPassword"

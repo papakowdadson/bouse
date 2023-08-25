@@ -4,6 +4,7 @@ import { db } from "../firebase.config";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
+import GoogleIcon from '../assets/svg/googleIcon.svg'
 
 // import { ReactComponent as GoogleIcon } from "../assets/svg/googleIcon.svg";
 
@@ -42,7 +43,7 @@ function OAuth() {
       <button className="socialIconDiv" onClick={onGoogleClick}>
         <img
           className="socialIconImg"
-          src={require("../assets/svg/googleIcon.svg")}
+          src={GoogleIcon}
           alt="Google Icon"
           width="36px"
           height="36px"

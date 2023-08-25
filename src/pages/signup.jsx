@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
 import {db} from '../firebase.config';
 import { setDoc,doc,serverTimestamp } from "firebase/firestore";
+import VisibilityIcon from '../assets/svg/visibilityIcon.svg';
+import VisibilityOff from '../assets/svg/VisibilityOff.svg';
 
 import { ReactComponent as ArrowRightIcon} from '../assets/svg/keyboardArrowRightIcon.svg'
 import OAuth from "../component/OAuth";
@@ -91,7 +93,7 @@ function Signup() {
               className="passwordInput"
             />
             <img
-              src={require("../assets/svg/visibilityIcon.svg")}
+              src={showPassword? VisibilityIcon: VisibilityOff}
               className="showPassword"
               alt="password"
               onClick={() => setShowPassword((prevState) => !prevState)}

@@ -44,6 +44,7 @@ const Listing = () => {
 
   useEffect(() => {
     fetchListing();
+   
   }, [navigate, params.listingId]);
   if (loading){return<Spinner/>}
   
@@ -53,13 +54,18 @@ const Listing = () => {
       <Swiper slidesPerView={1} pagination={{ clickable: true }}>
         {listing.imageUrls.map((url, index) => (
           <SwiperSlide key={index}>
+          {/* TODO:fix slider image */}
             <div
               className="swiperSlideDiv"
               style={{
-                background: `url(${listing.imageUrls[index]}) center no-repeat `,
+                background: `url(${url}) center no-repeat `,
                 backgroundSize: "cover",
               }}
-            ></div>
+            >
+            <img src={url} alt="" srcset="" />
+            {console.log('url')}
+            {console.log(url)}
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>
@@ -75,6 +81,7 @@ const Listing = () => {
       >
         <img src={shareIcon} alt="share Icon" />
       </div>
+      { console.log(listing)}
       {shareLinkCopied && <p className="linkCopied">Link Copied</p>}
       <div className="listingDetails">
         <p className="listingName">

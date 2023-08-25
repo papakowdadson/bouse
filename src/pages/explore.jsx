@@ -10,11 +10,10 @@ function Explore() {
   return (
     <div className="explore">
       <header>
-        <p className="pageHeader">explore</p>
+        <p className="pageHeader">Explore</p>
       </header>
       <main>
       <Slider/>
-        <p>Recommendation</p>
         <p className="exploreCategoryHeading">
           Categories
         </p>

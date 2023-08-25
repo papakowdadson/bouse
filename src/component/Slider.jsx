@@ -48,7 +48,7 @@ function Slider() {
                 navigate(`/category/${data.type}/${id}`);
               }}
             >
-             <div className="swiperSlideDiv" style={{background:`url(${data.imageUrls[0]})center no-repeat`,backgroundSize:'cover' }} >
+             <div className="swiperSlideDiv" style={{background:`url(${data.imageUrls[0]})no-repeat center`,backgroundSize:'cover' }} >
                 <p className="swiperSlideText">{data.name}</p>
                 <p className="swiperSlidePrice">${data.offer ? data.discountedPrice : data.regularPrice}{' '}{data.type === 'rent' && '/ month'}</p>
              </div>   
