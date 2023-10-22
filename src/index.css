@@ -372,6 +372,7 @@ button {
 }
 
 .exploreCategories {
+  margin-bottom: 86px;
   display: flex;
   justify-content: space-between;
 }
